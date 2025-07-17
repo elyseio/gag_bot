@@ -56,7 +56,7 @@ def locate_and_click(image_path: str, description: str = "element", dry_run: boo
         if location:
             move_and_click(pyautogui.center(location), dry_run)
             return True
-        time.sleep(1)
+        time.sleep(2)
     logger.error(f"{description.capitalize()} not found after retries.")
     sys.exit(1)
 
