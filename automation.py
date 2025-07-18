@@ -151,6 +151,17 @@ def gear_automation_purchase():
     item_pos = tuple(CONFIG["gear_shop"]["item_position"])
     button_pos = tuple(CONFIG["gear_shop"]["buy_button_position"])
     purchase_times = 3
+    
+    gear_items = {
+        0: 'Basic Sprinkler',
+        1: 'Advanced Sprinkler',
+        2: 'Medium Toy',
+        3: 'Medium Treat',
+        4: 'Godly Sprinkler',
+        5: 'Tanning Mirror',
+        6: 'Master Sprinkler',
+        7: 'Levelup Lollipop'
+    }
 
     pydirectinput.press('e')
     time.sleep(3)
