@@ -42,6 +42,15 @@ logger = logging.getLogger(__name__)
 # 🛠 Utility Functions
 # ==========================
 
+def elapsed_time(start_time: float):
+    """Calculates and logs the elapsed time since start_time."""
+    end_time = time.time()
+    elapsed_seconds = int(end_time - start_time)
+    hours = elapsed_seconds // 3600
+    minutes = (elapsed_seconds % 3600) // 60
+    seconds = elapsed_seconds % 60
+    logger.info(f"Ran for: {hours:02}:{minutes:02}:{seconds:02} h:m:s")
+
 def move_and_click(position: Tuple[int, int]):
     """
     Move the mouse cursor to a specified screen position and simulate a click.
@@ -77,6 +86,7 @@ def locate_and_click(image_path: str, description: str = "element") -> bool:
             logger.warning(f"{description.capitalize()} not found on attempt {attempt + 1}. Retrying...")
         time.sleep(2)
     logger.error(f"{description.capitalize()} not found after {attempt + 1} retries.")
+    logger.error("Exiting program.")
     sys.exit(1)
 
 def click_exit_button():
@@ -225,14 +235,8 @@ def main():
             else:
                 wait_for_next_5min_window(last_run)
     except KeyboardInterrupt:
-        end_time = time.time()
-        elapsed_seconds = int(end_time - start_time)
-
-        hours = elapsed_seconds // 3600
-        minutes = (elapsed_seconds % 3600) // 60
-        seconds = elapsed_seconds % 60
         logger.info(f"Bot terminated by user. Total cycles: {run_count}")
-        logger.info(f"Ran for: {hours:02}:{minutes:02}:{seconds:02} h:m:s")
+        elapsed_time(start_time)
         sys.exit(0)
 
 if __name__ == '__main__':
