@@ -42,21 +42,36 @@ logger = logging.getLogger(__name__)
 # 🛠 Utility Functions
 # ==========================
 
-def move_and_click(position: Tuple[int, int], dry_run: bool = False):
+def move_and_click(position: Tuple[int, int]):
+    """
+    Move the mouse cursor to a specified screen position and simulate a click.
+
+    Args:
+        position (Tuple[int, int]): The (x, y) coordinates on the screen where the click should occur.
+    """
     pyautogui.moveTo(position)
     pydirectinput.moveRel(1, 0)
     pydirectinput.moveRel(-1, 0)
-    if not dry_run:
-        pyautogui.click()
-    logger.debug(f"Clicked at {position} (dry_run={dry_run})")
+    pyautogui.click()
+    logger.debug(f"Clicked at {position}")
 
-def locate_and_click(image_path: str, description: str = "element", dry_run: bool = False) -> bool:
+def locate_and_click(image_path: str, description: str = "element") -> bool:
+    """
+    Attempt to locate an image on the screen and perform a click on its center if found.
+
+    Args:
+        image_path (str): Path to the image to locate on screen.
+        description (str): Text description of the element being located (for logging).
+
+    Returns:
+        bool: True if the image was found and clicked, otherwise exits the program.
+    """
     retry = 5
     for attempt in range(retry):
         try:
             location = pyautogui.locateOnScreen(image_path, grayscale=True, confidence=0.8)
             if location:
-                move_and_click(pyautogui.center(location), dry_run)
+                move_and_click(pyautogui.center(location))
                 return True
         except pyautogui.ImageNotFoundException:
             logger.warning(f"{description.capitalize()} not found on attempt {attempt + 1}. Retrying...")
@@ -64,17 +79,20 @@ def locate_and_click(image_path: str, description: str = "element", dry_run: boo
     logger.error(f"{description.capitalize()} not found after {attempt + 1} retries.")
     sys.exit(1)
 
-def click_exit_button(dry_run: bool = False):
-    locate_and_click(EXIT_IMAGE_PATH, "exit button", dry_run)
+def click_exit_button():
+    """Finds and clicks the exit button in the UI."""
+    locate_and_click(EXIT_IMAGE_PATH, "exit button")
     time.sleep(0.5)
 
 def within_same_5min_window(last_run: Optional[datetime.datetime]) -> bool:
+    """Checks if the current time is within the same 5-minute window as the last run."""
     if not last_run:
         return False
     now = datetime.datetime.now()
     return (now - last_run).total_seconds() < FIVE_MINUTES and (now.minute // 5) == (last_run.minute // 5)
 
 def wait_for_next_5min_window(last_run: Optional[datetime.datetime]):
+    """Waits until a new 5-minute window has started."""
     while within_same_5min_window(last_run):
         time.sleep(1)
 
@@ -82,14 +100,23 @@ def wait_for_next_5min_window(last_run: Optional[datetime.datetime]):
 # ⚙️ Gear Shop Automation
 # ==========================
 
-def purchase_item(item_pos: Tuple[int, int], button_pos: Tuple[int, int], times: int, dry_run: bool = False):
-    move_and_click(item_pos, dry_run)
+def purchase_item(item_pos: Tuple[int, int], button_pos: Tuple[int, int], times: int):
+    """
+    Clicks on a gear item and its corresponding buy button a specified number of times.
+
+    Args:
+        item_pos (Tuple[int, int]): Coordinates of the gear item.
+        button_pos (Tuple[int, int]): Coordinates of the buy button.
+        times (int): Number of times to click the buy button.
+    """
+    move_and_click(item_pos)
     time.sleep(0.5)
     for _ in range(times):
-        move_and_click(button_pos, dry_run)
-    move_and_click(item_pos, dry_run)
+        move_and_click(button_pos)
+    move_and_click(item_pos)
 
-def gear_automation_purchase(dry_run: bool = False):
+def gear_automation_purchase():
+    """Automates purchasing of gear items from the in-game shop."""
     scroll_per_item = -120
     item_pos = tuple(CONFIG["gear_shop"]["item_position"])
     button_pos = tuple(CONFIG["gear_shop"]["buy_button_position"])
@@ -98,7 +125,7 @@ def gear_automation_purchase(dry_run: bool = False):
     pydirectinput.press('e')
     time.sleep(3)
 
-    if not locate_and_click(GEAR_IMAGE_PATH, "gear shop", dry_run):
+    if not locate_and_click(GEAR_IMAGE_PATH, "gear shop"):
         return
 
     time.sleep(3)
@@ -118,25 +145,26 @@ def gear_automation_purchase(dry_run: bool = False):
         elif i == GEAR_ITEMS_TO_PURCHASE - 1:
             button_pos = (771, 730)
 
-        purchase_item(item_pos, button_pos, purchase_times, dry_run)
+        purchase_item(item_pos, button_pos, purchase_times)
         time.sleep(0.5)
         pyautogui.scroll(scroll_per_item)
 
     pyautogui.scroll(-600)
     time.sleep(0.5)
-    purchase_item((967, 739), (778, 794), purchase_times, dry_run)
+    purchase_item((967, 739), (778, 794), purchase_times)
     pyautogui.scroll(2500)
     time.sleep(3)
-    click_exit_button(dry_run)
+    click_exit_button()
 
-def buy_egg(dry_run: bool = False):
+def buy_egg():
+    """Automates the process of buying eggs in the game."""
     for _ in range(6):
         pydirectinput.press('a')
 
     pydirectinput.press('e')
     time.sleep(3)
 
-    if not locate_and_click(GEAR_IMAGE_PATH, "gear shop", dry_run):
+    if not locate_and_click(GEAR_IMAGE_PATH, "gear shop"):
         return
 
     time.sleep(3)
@@ -148,13 +176,13 @@ def buy_egg(dry_run: bool = False):
         if i == 2:
             item_pos = (971, 747)
             button_pos = (833, 805)
-        purchase_item(item_pos, button_pos, 1, dry_run)
+        purchase_item(item_pos, button_pos, 1)
         time.sleep(0.5)
         pyautogui.scroll(-100)
 
     pyautogui.scroll(700)
     time.sleep(3)
-    click_exit_button(dry_run)
+    click_exit_button()
     for _ in range(6):
         pydirectinput.press('d')
 
@@ -162,12 +190,14 @@ def buy_egg(dry_run: bool = False):
 # 🔁 Main Automation Loop
 # ==========================
 
-def automation_cycle(dry_run: bool = False):
+def automation_cycle():
+    """Executes one full automation cycle for gear and egg purchasing."""
     logger.info("Starting automation cycle...")
-    gear_automation_purchase(dry_run)
-    buy_egg(dry_run)
+    gear_automation_purchase()
+    buy_egg()
 
 def focus_roblox_window() -> bool:
+    """Attempts to focus the Roblox game window."""
     try:
         app = Application(backend="uia").connect(title_re=".*Roblox.*")
         app.top_window().set_focus()
@@ -177,7 +207,8 @@ def focus_roblox_window() -> bool:
         logger.error(f"Could not focus Roblox window: {e}")
         return False
 
-def main(dry_run: bool = False):
+def main():
+    """Main entry point for the bot, runs automation loop continuously."""
     logger.info("BOT INITIALIZED")
     last_run = None
     run_count = 0
@@ -186,7 +217,7 @@ def main(dry_run: bool = False):
         while True:
             if not within_same_5min_window(last_run):
                 if focus_roblox_window():
-                    automation_cycle(dry_run)
+                    automation_cycle()
                     last_run = datetime.datetime.now()
                     run_count += 1
                     logger.info(f"Cycle complete. Total runs: {run_count}")
@@ -197,4 +228,4 @@ def main(dry_run: bool = False):
         sys.exit(0)
 
 if __name__ == '__main__':
-    main(dry_run=False)
+    main()
