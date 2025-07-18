@@ -51,7 +51,8 @@ def move_and_click(position: Tuple[int, int], dry_run: bool = False):
     logger.debug(f"Clicked at {position} (dry_run={dry_run})")
 
 def locate_and_click(image_path: str, description: str = "element", dry_run: bool = False) -> bool:
-    for attempt in range(3):
+    retry = 5
+    for attempt in range(retry):
         try:
             location = pyautogui.locateOnScreen(image_path, grayscale=True, confidence=0.8)
             if location:
