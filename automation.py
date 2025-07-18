@@ -212,6 +212,7 @@ def main():
     logger.info("BOT INITIALIZED")
     last_run = None
     run_count = 0
+    start_time = time.time()
 
     try:
         while True:
@@ -224,7 +225,14 @@ def main():
             else:
                 wait_for_next_5min_window(last_run)
     except KeyboardInterrupt:
+        end_time = time.time()
+        elapsed_seconds = int(end_time - start_time)
+
+        hours = elapsed_seconds // 3600
+        minutes = (elapsed_seconds % 3600) // 60
+        seconds = elapsed_seconds % 60
         logger.info(f"Bot terminated by user. Total cycles: {run_count}")
+        logger.info(f"Ran for: {hours:02}:{minutes:02}:{seconds:02} h:m:s")
         sys.exit(0)
 
 if __name__ == '__main__':
