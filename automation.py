@@ -52,12 +52,15 @@ def move_and_click(position: Tuple[int, int], dry_run: bool = False):
 
 def locate_and_click(image_path: str, description: str = "element", dry_run: bool = False) -> bool:
     for attempt in range(3):
-        location = pyautogui.locateOnScreen(image_path, grayscale=True, confidence=0.8)
-        if location:
-            move_and_click(pyautogui.center(location), dry_run)
-            return True
+        try:
+            location = pyautogui.locateOnScreen(image_path, grayscale=True, confidence=0.8)
+            if location:
+                move_and_click(pyautogui.center(location), dry_run)
+                return True
+        except pyautogui.ImageNotFoundException:
+            logger.warning(f"{description.capitalize()} not found on attempt {attempt + 1}. Retrying...")
         time.sleep(2)
-    logger.error(f"{description.capitalize()} not found after retries.")
+    logger.error(f"{description.capitalize()} not found after {attempt + 1} retries.")
     sys.exit(1)
 
 def click_exit_button(dry_run: bool = False):
