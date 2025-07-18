@@ -8,6 +8,7 @@ from typing import Optional, Tuple
 import pyautogui
 import pydirectinput
 from pywinauto import Application
+import requests
 
 # ==========================
 # 🧭 Configuration
@@ -21,6 +22,7 @@ with open(CONFIG_PATH, "r") as config_file:
 GEAR_IMAGE_PATH = CONFIG["image_paths"]["gear"]
 EXIT_IMAGE_PATH = CONFIG["image_paths"]["exit"]
 GEAR_ITEMS_TO_PURCHASE = CONFIG["gear_items_to_purchase"]
+DISCORD_HOOK_URL = CONFIG["discord_hook_url"]
 FIVE_MINUTES = 300  # seconds
 
 # ==========================
@@ -41,6 +43,24 @@ logger = logging.getLogger(__name__)
 # ==========================
 # 🛠 Utility Functions
 # ==========================
+
+def send_discord_notification(message: str):
+    """
+    Sends a notification message to a Discord channel using a webhook.
+
+    Args:
+        message (str): The message to send to the Discord channel.
+    """
+    if not DISCORD_HOOK_URL:
+        logger.warning("Discord webhook URL is not set. Skipping notification.")
+        return
+
+    try:
+        response = requests.post(DISCORD_HOOK_URL, json={"content": message})
+        response.raise_for_status()
+        logger.info("Discord notification sent successfully.")
+    except requests.RequestException as e:
+        logger.error(f"Failed to send Discord notification: {e}")
 
 def elapsed_time(start_time: float):
     """Calculates and logs the elapsed time since start_time."""
