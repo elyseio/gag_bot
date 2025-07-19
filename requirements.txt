@@ -3,3 +3,5 @@ pydirectinput
 pywinauto
 requests
 python-dotenv
+pillow
+opencv-python
