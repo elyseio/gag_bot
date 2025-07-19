@@ -1,5 +1,3 @@
-import os
-from dotenv import load_dotenv
 import time
 import datetime
 import sys
@@ -10,14 +8,6 @@ from typing import Optional, Tuple
 import pyautogui
 import pydirectinput
 from pywinauto import Application
-import requests
-
-# ==========================
-# DOTENV Configuration
-# ==========================
-
-load_dotenv()
-DISCORD_HOOK_URL = os.getenv("DISCORD_HOOK_URL")
 
 # ==========================
 # 🧭 Configuration
@@ -115,29 +105,6 @@ def focus_roblox_window() -> bool:
         logger.error(f"Could not focus Roblox window: {e}")
         return False
     
-def send_discord_notification(message: str, item: str) -> None:
-    """
-    Sends a notification message to a Discord channel using a webhook.
-
-    Args:
-        message (str): The message to send to the Discord channel.
-        item (str): The item related to the notification, used in the message.
-
-    Returns:
-        None
-    """
-    
-    if not DISCORD_HOOK_URL:
-        logger.warning("Discord webhook URL is not set. Skipping notification.")
-        return
-
-    try:
-        response = requests.post(DISCORD_HOOK_URL, json={"content": message})
-        response.raise_for_status()
-        logger.info(f"Discord notification sent successfully: {item}")
-    except requests.RequestException as e:
-        logger.error(f"Failed to send Discord notification: {e}")
-
 def move_and_click(position: Tuple[int, int]) -> None:
     """
     Move the mouse cursor to a specified screen position and simulate a click.
@@ -202,7 +169,6 @@ def purchase_item(item_pos: Tuple[int, int], button_pos: Tuple[int, int], times:
         button_pos (Tuple[int, int]): Coordinates of the buy button.
         times (int): Number of times to click the buy button.
         item (str): Name of the item being purchased, used for logging.
-        shop (str): Type of shop ("gear" or "egg") for logging and stock checking.
 
     Returns:
         None
@@ -217,7 +183,6 @@ def purchase_item(item_pos: Tuple[int, int], button_pos: Tuple[int, int], times:
     try:
         is_no_stock_showing = pyautogui.locateOnScreen(img, grayscale=True, confidence=0.8)
     except pyautogui.ImageNotFoundException:
-        send_discord_notification(f"{item} is in stock!", item)
         time.sleep(0.5)
     else:
         move_and_click(item_pos) #skip clicking the buy button if no stock is showing
