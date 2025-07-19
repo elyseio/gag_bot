@@ -31,11 +31,16 @@ project/
 
 ⚙️ Setup
 
-Run in the terminal (preferrable Git Bash on Windows):
+Run in the terminal (use Git Bash for Windows OS):
+```
 1. python -m venv .venv
 2. source .venv/Scripts/activate
 3. pip install -r requirements.txt
-4. python automation.py
+4. touch .env
+5. inside .env, add:
+     DISCORD_HOOK_URL=<your discord webhook url here>
+6. python automation.py
+```
 
 📸 Screenshots of the button are located under `sc/`
 
