@@ -2,3 +2,4 @@ pyautogui
 pydirectinput
 pywinauto
 requests
+python-dotenv

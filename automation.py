@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 import time
 import datetime
 import sys
@@ -9,6 +11,13 @@ import pyautogui
 import pydirectinput
 from pywinauto import Application
 import requests
+
+# ==========================
+# DOTENV Configuration
+# ==========================
+
+load_dotenv()
+DISCORD_HOOK_URL = os.getenv("DISCORD_HOOK_URL")
 
 # ==========================
 # 🧭 Configuration
@@ -24,7 +33,6 @@ EXIT_IMAGE_PATH = CONFIG["image_paths"]["exit"]
 NO_STOCK_IMAGE_PATH = CONFIG["image_paths"]["no-stock"]
 NO_STOCK_EGG_IMAGE_PATH = CONFIG["image_paths"]["no-stock-egg"]
 GEAR_ITEMS_TO_PURCHASE = CONFIG["gear_items_to_purchase"]
-DISCORD_HOOK_URL = CONFIG["discord_hook_url"]
 FIVE_MINUTES = 300  # seconds
 
 # ==========================
@@ -118,6 +126,7 @@ def send_discord_notification(message: str, item: str) -> None:
     Returns:
         None
     """
+    
     if not DISCORD_HOOK_URL:
         logger.warning("Discord webhook URL is not set. Skipping notification.")
         return
