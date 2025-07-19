@@ -1,10 +1,13 @@
 🤖 Grow A Garden Automation Bot
 
-Automates gear purchases and egg buying in a Grow A Garden using screen detection, input emulation, and scheduled execution.
+Automates gear purchases and egg buying in Grow A Garden using screen detection, input emulation, and scheduled execution.
+Also send Discord notifications for available items.
 
 🚀 Features
 
 Automated gear and egg purchasing using PyAutoGUI + PyDirectInput
+
+Send Discord notifications for available items
 
 Runs every 5 minutes using time-based triggers
 
@@ -17,6 +20,7 @@ Automatic Roblox window focusing with pywinauto (auto alt tab to roblox)
 🗂 File Structure
 ```
 project/
+├── sc/                         # contains the screen-shotted buttons  
 ├── automation.py               # Main automation script
 ├── config.json                 # Contains screen coordinates and image paths
 ├── automation.log              # Logs automation activity (will show after running once)
@@ -27,27 +31,13 @@ project/
 
 ⚙️ Setup
 
-Run in the terminal:
+Run in the terminal (preferrable Git Bash on Windows):
 1. python -m venv .venv
 2. source .venv/Scripts/activate
 3. pip install -r requirements.txt
-4. Configure Coordinates & Images (get the coordinates of gear_shop values based on get_mouse_coordinates.py)
-Create a config.json file:
-```
-{
-  "image_paths": {
-    "gear": "sc/gear.png",
-    "exit": "sc/x.png"
-  },
-  "gear_items_to_purchase": 8,
-  "gear_shop": {
-    "item_position": [968, 469],
-    "buy_button_position": [774, 664]
-  }
-}
-```
+4. python automation.py
 
-📸 Screenshots of the button are located under sc/
+📸 Screenshots of the button are located under `sc/`
 
 ▶️ Running the Bot
 `python automation.py`
@@ -67,6 +57,8 @@ List of packages used:
 pyautogui
 pydirectinput
 pywinauto
+requests
+python-dotenv
 ```
 
 🧼 Exiting Safely
