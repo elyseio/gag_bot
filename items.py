@@ -11,12 +11,12 @@ items = {
         8: "Godly Sprinkler",
         9: "Magnifying Glass",
         10: "Master Sprinkler",
-        12: "Cleaning Spray",
-        13: "Favorite Tool",
-        14: "Harvest Tool",
-        15: "Friendship Pot",
-        16: "Grandmaster Sprinkler",
-        17: "Levelup Lollipop"
+        11: "Cleaning Spray",
+        12: "Favorite Tool",
+        13: "Harvest Tool",
+        14: "Friendship Pot",
+        15: "Grandmaster Sprinkler",
+        16: "Levelup Lollipop"
     },
     "egg": {
         0: "Common Egg",

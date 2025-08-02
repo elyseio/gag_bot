@@ -5,7 +5,7 @@
     "exit": "sc/x.png"
   },
   "gear_shop": {
-    "item_position": [968, 469],
+    "item_position": [965, 487],
     "buy_button_position": [774, 664]
   }
 }
