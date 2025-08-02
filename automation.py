@@ -17,15 +17,11 @@ import FreeSimpleGUI as sg
 from items import items
 
 # ==========================
-# DOTENV Configuration
+# Configuration
 # ==========================
 
 load_dotenv()
 DISCORD_HOOK_URL = os.getenv("DISCORD_HOOK_URL")
-
-# ==========================
-# 🪭 Configuration
-# ==========================
 
 CONFIG_PATH = "config.json"
 
@@ -38,7 +34,7 @@ NO_STOCK_IMAGE_PATH = CONFIG["image_paths"]["no-stock"]
 FIVE_MINUTES = 300  # seconds
 
 # ==========================
-# 🪥 Logging Setup
+# Logging Setup
 # ==========================
 
 logging.basicConfig(
@@ -53,8 +49,17 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ==========================
-# 🛠 Utility Functions
+# Utility Functions
 # ==========================
+
+def safe_sleep(seconds: float, terminate_flag: Optional[threading.Event] = None) -> None:
+    interval = 0.1
+    elapsed = 0.0
+    while elapsed < seconds:
+        if terminate_flag and terminate_flag.is_set():
+            break
+        time.sleep(interval)
+        elapsed += interval
 
 def within_same_5min_window(last_run: Optional[datetime.datetime]) -> bool:
     if not last_run:
@@ -62,9 +67,11 @@ def within_same_5min_window(last_run: Optional[datetime.datetime]) -> bool:
     now = datetime.datetime.now()
     return (now - last_run).total_seconds() < FIVE_MINUTES and (now.minute // 5) == (last_run.minute // 5)
 
-def wait_for_next_5min_window(last_run: Optional[datetime.datetime]) -> None:
+def wait_for_next_5min_window(last_run: Optional[datetime.datetime], terminate_flag: threading.Event) -> None:
     while within_same_5min_window(last_run):
-        time.sleep(1)
+        if terminate_flag.is_set():
+            break
+        safe_sleep(1, terminate_flag)
 
 def elapsed_time(start_time: float) -> None:
     end_time = time.time()
@@ -81,7 +88,11 @@ def focus_roblox_window() -> bool:
         logger.info("Roblox window focused.")
         return True
     except Exception as e:
+        for _ in range(10):
+            logger.error("Roblox window not found. Retrying in 1 second...")
+            time.sleep(1)
         logger.error(f"Could not focus Roblox window: {e}")
+        sys.exit(1)
         return False
 
 def send_discord_notification(message: str, item: str) -> None:
@@ -113,7 +124,7 @@ def locate_and_click(image_path: str, description: str = "element", terminate_fl
             move_and_click(pyautogui.center(location))
             return True
         logger.warning(f"{description.capitalize()} not found on attempt {attempt + 1}. Retrying...")
-        time.sleep(2)
+        safe_sleep(2, terminate_flag)
 
     logger.error(f"{description.capitalize()} not found after {retry} retries.")
     if terminate_flag:
@@ -122,7 +133,7 @@ def locate_and_click(image_path: str, description: str = "element", terminate_fl
 
 def click_exit_button(terminate_flag: Optional[threading.Event] = None) -> None:
     locate_and_click(EXIT_IMAGE_PATH, "exit button", terminate_flag)
-    time.sleep(0.5)
+    safe_sleep(0.5, terminate_flag)
 
 # ==========================
 # Purchasing Automation
@@ -134,12 +145,13 @@ def purchase_item(item_pos: Tuple[int, int], button_pos: Tuple[int, int], times:
         return
 
     move_and_click(item_pos)
-    time.sleep(1)
+    safe_sleep(1, terminate_flag)
+
     try:
         is_no_stock_showing = pyautogui.locateOnScreen(NO_STOCK_IMAGE_PATH, grayscale=True, confidence=0.8)
     except pyautogui.ImageNotFoundException:
         send_discord_notification(f"{item} is in stock!", item)
-        time.sleep(0.5)
+        safe_sleep(0.5, terminate_flag)
     else:
         move_and_click(item_pos)
         return
@@ -149,26 +161,28 @@ def purchase_item(item_pos: Tuple[int, int], button_pos: Tuple[int, int], times:
             logger.info("Terminate flag set during purchase loop. Exiting.")
             return
         move_and_click(button_pos)
+        safe_sleep(0.1, terminate_flag)
     move_and_click(item_pos)
 
 # ==========================
-# ⚙️ Gear Shop Automation 
+# Gear Shop Automation
+# ==========================
 
 def gear_automation_purchase(gears_to_purchase: list[int], terminate_flag: threading.Event) -> None:
     scroll_per_item = -160
     item_pos = tuple(CONFIG["gear_shop"]["item_position"])
     button_pos = tuple(CONFIG["gear_shop"]["buy_button_position"])
     purchase_times = 3
-    num_of_gears_to_purchase = len(items["gear"])
     gear_items = items["gear"]
+    num_of_gears_to_purchase = len(gear_items)
 
     pydirectinput.press('e')
-    time.sleep(3)
+    safe_sleep(3, terminate_flag)
 
     if not locate_and_click(GEAR_IMAGE_PATH, "gear shop", terminate_flag):
         return
 
-    time.sleep(3)
+    safe_sleep(3, terminate_flag)
 
     for i in range(num_of_gears_to_purchase):
         if terminate_flag.is_set():
@@ -190,13 +204,13 @@ def gear_automation_purchase(gears_to_purchase: list[int], terminate_flag: threa
 
         if i in gears_to_purchase:
             purchase_item(item_pos, button_pos, purchase_times, gear_items[i], "gear", terminate_flag)
-            time.sleep(1)
+            safe_sleep(1, terminate_flag)
 
         pyautogui.scroll(scroll_per_item)
-        time.sleep(1)
+        safe_sleep(1, terminate_flag)
 
     pyautogui.scroll(3000)
-    time.sleep(3)
+    safe_sleep(3, terminate_flag)
     click_exit_button(terminate_flag)
 
 def automation_cycle(selected_keys: list[int], terminate_flag: threading.Event) -> None:
@@ -204,7 +218,7 @@ def automation_cycle(selected_keys: list[int], terminate_flag: threading.Event) 
     gear_automation_purchase(selected_keys, terminate_flag)
 
 # ==========================
-# 🏁Main Function
+# Main Function
 # ==========================
 
 def run_bot(selected_keys: list[int], terminate_flag: threading.Event) -> None:
@@ -222,7 +236,7 @@ def run_bot(selected_keys: list[int], terminate_flag: threading.Event) -> None:
                     run_count += 1
                     logger.info(f"Cycle complete. Total runs: {run_count}")
             else:
-                wait_for_next_5min_window(last_run)
+                wait_for_next_5min_window(last_run, terminate_flag)
     except KeyboardInterrupt:
         logger.info("Bot manually interrupted.")
     finally:
