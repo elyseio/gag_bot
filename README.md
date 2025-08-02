@@ -1,11 +1,11 @@
 🤖 Grow A Garden Automation Bot
 
 Automates gear purchases and egg buying in Grow A Garden using screen detection, input emulation, and scheduled execution.
-Also send Discord notifications for available items.
+Also sends Discord notifications for available items.
 
 🚀 Features
 
-Automated gear and egg purchasing using PyAutoGUI + PyDirectInput
+Automated gear and egg purchasing using PyAutoGUI + PyDirectInput + FreeSimpleGUI
 
 Send Discord notifications for available items
 
@@ -25,6 +25,8 @@ project/
 ├── config.json                 # Contains screen coordinates and image paths
 ├── automation.log              # Logs automation activity (will show after running once)
 ├── get_mouse_coordinate.py     # Run to view the coordinates (x, y)
+├── items.py                    # Contains the items to purchase list
+├── main.py                     # GUI, main app
 ├── requirements.txt            # Dependency list
 └── README.md                   # This documentation
 ```
@@ -36,16 +38,17 @@ Run in the terminal (use Git Bash for Windows OS):
 1. python -m venv .venv
 2. source .venv/Scripts/activate
 3. pip install -r requirements.txt
-4. touch .env
-5. inside .env, add:
+(optional)
+*. touch .env
+*. inside .env, add:
      DISCORD_HOOK_URL=<your discord webhook url here>
-6. python automation.py
+4. python main.py
 ```
 
 📸 Screenshots of the button are located under `sc/`
 
 ▶️ Running the Bot
-`python automation.py`
+`python main.py`
 
 💡 Tips
 
@@ -64,8 +67,9 @@ pydirectinput
 pywinauto
 requests
 python-dotenv
+pillow
+opencv-python
+FreeSimpleGUI
 ```
 
 🧼 Exiting Safely
-
-Press CTRL+C on the terminal to stop the bot. Log will show total cycles completed.
