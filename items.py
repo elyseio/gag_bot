@@ -15,7 +15,8 @@ gear_items = {
         13: "Favorite Tool",
         14: "Harvest Tool",
         15: "Friendship Pot",
-        16: "Levelup Lollipop"
+        16: "Grandmaster Sprinkler",
+        17: "Levelup Lollipop"
     },
     "egg": {
         0: "Common Egg",
