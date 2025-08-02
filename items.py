@@ -1,5 +1,5 @@
-gear_items = {
-    "shop": {
+items = {
+    "gear": {
         0: "Watering Can",
         1: "Trading Ticket",
         2: "Trowel",
