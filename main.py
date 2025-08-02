@@ -29,12 +29,12 @@ def run_bot_thread(selected_keys):
 # ==========================
 # GUI Setup
 # ==========================
-status_text = sg.Text('Status: Idle', key='status', font=('Any', 10), text_color='white', background_color='gray')
+status_text = sg.Text('Status: Idle', key='status', font=('Segoe UI', 10), text_color='white', background_color='gray')
 
 layout = [[
-    sg.Text('Gears', font=('Any', 14)),
+    sg.Text('Gears', font=('Segoe UI', 14)),
     sg.Push(),
-    sg.Button('Select all', key='select_all', size=(10, 1), font=('Any', 8)),
+    sg.Button('Select all', key='select_all', size=(10, 1), font=('Segoe UI', 8)),
 ]]
 
 checkbox_size = (20, 1)
@@ -61,8 +61,8 @@ for i in range(0, len(gear_items), 2):
 
 layout.append([
     sg.Push(),
-    sg.Button('Run Automation', key='run_automation', size=(15, 1), font=('Any', 9)),
-    sg.Button('Terminate', key='terminate', size=(10, 1), font=('Any', 9), button_color=('white', 'red')),
+    sg.Button('Run Automation', key='run_automation', size=(15, 1), font=('Segoe UI', 9)),
+    sg.Button('Terminate', key='terminate', size=(10, 1), font=('Segoe UI', 9), button_color=('white', 'red')),
 ])
 layout.append([status_text])
 
@@ -84,7 +84,15 @@ while True:
 
     if event == 'run_automation':
         selected_gear = [gear for gear in gear_items if values[gear]]
+        if not selected_gear:
+            sg.popup_error("Please select at least one gear to purchase.")
+            continue
         selected_keys = [get_key_by_value(gear_items_dict, gear) for gear in selected_gear]
+
+        # Disable checkboxes to prevent changes during automation
+        for gear in gear_items:
+            window[gear].update(disabled=True)
+        window['run_automation'].update(disabled=True)
         print("🛠️ Running automation:")
         print("Selected gears to purchase:", selected_gear)
 
@@ -98,7 +106,7 @@ while True:
     if event == 'terminate':
         print("🛑 Terminating automation...")
         terminate_flag.set()
-        window['status'].update('Status: Terminated...', text_color='white', background_color='red')
+        window['status'].update('Status: Terminating...', text_color='white', background_color='red')
 
     if not is_running and (bot_thread is None or not bot_thread.is_alive()):
         window['status'].update('Status: Idle', text_color='white', background_color='gray')
