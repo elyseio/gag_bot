@@ -93,6 +93,7 @@ while True:
         for gear in gear_items:
             window[gear].update(disabled=True)
         window['run_automation'].update(disabled=True)
+        window['select_all'].update(disabled=True)
         print("🛠️ Running automation:")
         print("Selected gears to purchase:", selected_gear)
 
@@ -110,5 +111,11 @@ while True:
 
     if not is_running and (bot_thread is None or not bot_thread.is_alive()):
         window['status'].update('Status: Idle', text_color='white', background_color='gray')
+        # Re-enable checkboxes and buttons
+        for gear in gear_items:
+            window[gear].update(disabled=False)
+        window['run_automation'].update(disabled=False)
+        window['select_all'].update(disabled=False)
+
 
 window.close()
