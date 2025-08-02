@@ -184,10 +184,16 @@ def gear_automation_purchase(gears_to_purchase: list[int], terminate_flag: threa
 
     safe_sleep(3, terminate_flag)
 
+    click = 0
+
     for i in range(num_of_gears_to_purchase):
         if terminate_flag.is_set():
             logger.info("Terminate flag set during gear purchase loop.")
             return
+        
+        if click == len(gears_to_purchase):
+            logger.info("All gears to purchase have been processed.")
+            break
 
         if i == 6:
             item_pos = (971, 503)
@@ -204,6 +210,7 @@ def gear_automation_purchase(gears_to_purchase: list[int], terminate_flag: threa
 
         if i in gears_to_purchase:
             purchase_item(item_pos, button_pos, purchase_times, gear_items[i], "gear", terminate_flag)
+            click += 1
             safe_sleep(1, terminate_flag)
 
         pyautogui.scroll(scroll_per_item)
