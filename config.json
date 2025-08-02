@@ -2,10 +2,8 @@
   "image_paths": {
     "gear": "sc/gear.png",
     "no-stock": "sc/no-stock.png",
-    "no-stock-egg": "sc/no-stock-egg.png",
     "exit": "sc/x.png"
   },
-  "gear_items_to_purchase": 8,
   "gear_shop": {
     "item_position": [968, 469],
     "buy_button_position": [774, 664]
