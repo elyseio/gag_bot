@@ -1,11 +1,15 @@
 {
   "image_paths": {
-    "gear": "sc/gear.png",
+    "gear": "sc/gear_egg.png",
     "no-stock": "sc/no-stock.png",
     "exit": "sc/x.png"
   },
   "gear_shop": {
     "item_position": [965, 487],
     "buy_button_position": [774, 664]
+  },
+  "egg_shop": {
+    "item_position": [975, 465],
+    "buy_button_position": [835, 633]
   }
 }
