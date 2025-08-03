@@ -2,6 +2,7 @@
   "image_paths": {
     "gear": "sc/gear_egg.png",
     "no-stock": "sc/no-stock.png",
+    "egg-no-stock": "sc/egg-no-stock.png",
     "exit": "sc/x.png"
   },
   "gear_shop": {
@@ -12,5 +13,6 @@
     "item_position": [975, 465],
     "buy_button_position": [835, 633]
   },
-  "always_in_stock": ["Watering Can", "Trowel", "Recall Wrench", "Cleaning Spray", "Favorite Tool", "Harvest Tool"]
+  "always_in_stock_gear": ["Watering Can", "Trowel", "Recall Wrench", "Cleaning Spray", "Favorite Tool", "Harvest Tool"],
+  "always_in_stock_egg": ["Common Egg"]
 }
