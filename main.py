@@ -62,7 +62,7 @@ for i in range(0, len(gear_items), 2):
 layout.append([
     sg.Push(),
     sg.Button('Run Automation', key='run_automation', size=(15, 1), font=('Segoe UI', 9)),
-    sg.Button('Terminate', key='terminate', size=(10, 1), font=('Segoe UI', 9), button_color=('white', 'red')),
+    sg.Button('Terminate', key='terminate', disabled=True, size=(10, 1), font=('Segoe UI', 9), button_color=('white', 'red')),
 ])
 layout.append([status_text])
 
@@ -94,6 +94,7 @@ while True:
             window[gear].update(disabled=True)
         window['run_automation'].update(disabled=True)
         window['select_all'].update(disabled=True)
+        window['terminate'].update(disabled=False)
         print("🛠️ Running automation:")
         print("Selected gears to purchase:", selected_gear)
 
