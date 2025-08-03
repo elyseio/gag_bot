@@ -81,19 +81,25 @@ def elapsed_time(start_time: float) -> None:
     seconds = elapsed_seconds % 60
     logger.info(f"Ran for: {hours:02}:{minutes:02}:{seconds:02} h:m:s")
 
-def focus_roblox_window() -> bool:
+def focus_roblox_window(terminate_flag: Optional[threading.Event] = None) -> bool:
     try:
         app = Application(backend="uia").connect(title_re=".*Roblox.*")
         app.top_window().set_focus()
         logger.info("Roblox window focused.")
         return True
     except Exception as e:
-        for _ in range(10):
-            logger.error("Roblox window not found. Retrying in 1 second...")
+        for attempt in range(10):
+            if terminate_flag and terminate_flag.is_set():
+                logger.info("Termination flag set during Roblox window focus. Exiting.")
+                return False
+            logger.error(f"Roblox window not found (attempt {attempt + 1}/10). Retrying in 1 second...")
             time.sleep(1)
-        logger.error(f"Could not focus Roblox window: {e}")
-        sys.exit(1)
+
+        logger.error(f"Could not focus Roblox window after 10 attempts: {e}")
+        if terminate_flag:
+            terminate_flag.set()
         return False
+
 
 def send_discord_notification(message: str, item: str) -> None:
     if not DISCORD_HOOK_URL:
@@ -237,7 +243,7 @@ def run_bot(selected_keys: list[int], terminate_flag: threading.Event) -> None:
     try:
         while not terminate_flag.is_set():
             if not within_same_5min_window(last_run):
-                if focus_roblox_window():
+                if focus_roblox_window(terminate_flag):
                     automation_cycle(selected_keys, terminate_flag)
                     last_run = datetime.datetime.now()
                     run_count += 1
