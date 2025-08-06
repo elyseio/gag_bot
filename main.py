@@ -1,7 +1,7 @@
 import FreeSimpleGUI as sg
 import threading
 
-from items import items
+from data.items import items
 from automation import run_bot
 
 # ==========================
