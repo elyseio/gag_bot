@@ -2,7 +2,7 @@ import FreeSimpleGUI as sg
 import threading
 
 from data.items import items
-from automation import run_bot
+from core.automation import run_bot
 
 # ==========================
 # Globals
