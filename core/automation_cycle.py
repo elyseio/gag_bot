@@ -166,8 +166,6 @@ def egg_automation_purchase(eggs_to_purchase: list[int], terminate_flag: threadi
     click_exit_button(terminate_flag)
 
 def automation_cycle(gear_selected_keys: list[int], egg_selected_keys: list[int], terminate_flag: threading.Event) -> None:
-    logger.info("Starting automation cycle...")
-
     if gear_selected_keys and egg_selected_keys:
         gear_automation_purchase(gear_selected_keys, terminate_flag)
 

@@ -37,6 +37,7 @@ def run_bot(gear_selected_keys: list[int], egg_selected_keys: list[int], termina
         logger.info("Purchasing gears only.")
     elif egg_selected_keys:
         logger.info("Purchasing eggs only.")
+    logger.info("Starting automation cycle...")
 
     try:
         while not terminate_flag.is_set():
