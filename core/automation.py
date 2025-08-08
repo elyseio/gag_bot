@@ -31,6 +31,12 @@ def run_bot(gear_selected_keys: list[int], egg_selected_keys: list[int], termina
     last_run = None
     run_count = 0
     start_time = time.time()
+    if gear_selected_keys and egg_selected_keys:
+        logger.info("Purchasing both gears and eggs.")
+    elif gear_selected_keys:
+        logger.info("Purchasing gears only.")
+    elif egg_selected_keys:
+        logger.info("Purchasing eggs only.")
 
     try:
         while not terminate_flag.is_set():

@@ -169,7 +169,6 @@ def automation_cycle(gear_selected_keys: list[int], egg_selected_keys: list[int]
     logger.info("Starting automation cycle...")
 
     if gear_selected_keys and egg_selected_keys:
-        logger.info("Purchasing both gears and eggs.")
         gear_automation_purchase(gear_selected_keys, terminate_flag)
 
         # Move to the egg shop
@@ -181,10 +180,8 @@ def automation_cycle(gear_selected_keys: list[int], egg_selected_keys: list[int]
         for _ in range(5):
             pydirectinput.press('d')
     elif gear_selected_keys:
-        logger.info("Purchasing gears only.")
         gear_automation_purchase(gear_selected_keys, terminate_flag)
     elif egg_selected_keys:
-        logger.info("Purchasing eggs only.")
         egg_automation_purchase(egg_selected_keys, terminate_flag)
 
     
