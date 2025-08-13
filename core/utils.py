@@ -1,10 +1,10 @@
-# core/utils.py
 import time
 import datetime
 import logging
 import threading
 from pywinauto import Application
 from typing import Optional
+
 
 logger = logging.getLogger(__name__)
 FIVE_MINUTES = 300

@@ -6,6 +6,7 @@ import pydirectinput
 from core.actions import move_and_click, click_exit_button, locate_and_click
 from core.discord import send_discord_notification
 from core.utils import safe_sleep
+from core.helper import last_item_click
 
 from config import CONFIG 
 from data.items import items
@@ -106,6 +107,10 @@ def gear_automation_purchase(gears_to_purchase: list[int], terminate_flag: threa
         if i in gears_to_purchase:
             purchase_item(item_pos, button_pos, purchase_times, gear_items[i], "gear", terminate_flag)
             click += 1
+
+            # If it's the last item to purchase, item position needs to be clicked again
+            if i == num_of_gears_to_purchase - 1:
+                last_item_click()
             safe_sleep(.5, terminate_flag)
 
         pyautogui.scroll(scroll_per_item)
@@ -156,7 +161,10 @@ def egg_automation_purchase(eggs_to_purchase: list[int], terminate_flag: threadi
         if i in eggs_to_purchase:
             purchase_item(item_pos, button_pos, purchase_times, egg_items[i], "egg", terminate_flag)
             click += 1
-            safe_sleep(1, terminate_flag)
+
+            if i == num_of_eggs_to_purchase - 1:
+                last_item_click()
+            safe_sleep(.5, terminate_flag)
 
         pyautogui.scroll(scroll_per_item)
         safe_sleep(1, terminate_flag)
