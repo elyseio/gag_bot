@@ -3,6 +3,7 @@
 Automates gear purchases and egg buying in Grow A Garden using screen detection, input emulation, and scheduled execution.
 Also sends Discord notifications for available items.
 
+
 🚀 Features
 
 Automated gear and egg purchasing using PyAutoGUI + PyDirectInput + FreeSimpleGUI
@@ -16,6 +17,7 @@ Click/image detection retries for robust automation
 Console + log file output via logging
 
 Automatic Roblox window focusing with pywinauto (auto alt tab to roblox)
+
 
 🗂 File Structure
 ```
@@ -47,8 +49,10 @@ Run in the terminal (use Git Bash for Windows OS):
 
 📸 Screenshots of the button are located under `sc/`
 
+
 ▶️ Running the Bot
 `python main.py`
+
 
 💡 Tips
 
